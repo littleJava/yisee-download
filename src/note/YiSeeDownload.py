@@ -35,6 +35,7 @@ class YiSee():
         #headers = {'User-Agent' : "Mozilla/5.0 (Windows NT 5.1; rv:15.0) Gecko/20100101 Firefox/15.0"}
         req = urllib2.Request(url, headers={'User-Agent' : "Mozilla/5.0 (Windows NT 5.1; rv:15.0) Gecko/20100101 Firefox/15.0"})
         webpage = urllib2.urlopen(req)
+#       some code path = request.GET['path'].encode('utf-8')
         content = webpage.read()
         webpage.close()
         
@@ -58,19 +59,25 @@ class YiSee():
         parse the chapter collection,and write each chapter to the file
     '''
     def parseNoteContent(self, sections):
-        for item in sections:
-            print item['href']
-            chapterUrl = 'http://www.yi-see.com/' + item['href']
-            print chapterUrl
-            chapterHtml = self.getPageContent(chapterUrl);
-            #print chapterHtml    
-            chapterSoup = BeautifulSoup(chapterHtml) 
-            note = chapterSoup.find("td", {"class":"ART"})
-            #print note.contents 
-#            print note.text 
-            self.writeFile(note.text, self.filePath);
-            break
-        #print sections[0]
+#        print sections
+        for index in range(1,len(sections)):
+            found = False
+            title = '第'+str(index)+'节'
+            for item in sections:
+                if title == item.text :
+                    found=True
+                    print item['href']
+                    chapterUrl = 'http://www.yi-see.com/' + item['href']
+                    print chapterUrl + ' '+item.text
+                    chapterHtml = self.getPageContent(chapterUrl);
+                    #print chapterHtml    
+                    chapterSoup = BeautifulSoup(chapterHtml) 
+                    note = chapterSoup.find("td", {"class":"ART"})
+                #print note.contents 
+                #print note.text 
+                    self.writeFile(note.text, self.filePath);
+                #break
+        
         return
     def writeFile(self, content, filePath):
         #   fname = unicode( 'Z:/李逵日记.txt', "utf8" ) 
